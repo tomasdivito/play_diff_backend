@@ -52,10 +52,26 @@ app.get('/callback', function (req, res) {
 
     console.log('access-token:', ACCESS_TOKEN)
 
-    res.redirect('http://localhost:3000/#' + querystring.stringify({
+    res.redirect('http://localhost:3000/?' + querystring.stringify({
       access_token: ACCESS_TOKEN,
       refresh_token: REFRESH_TOKEN
     }))
+  })
+})
+
+app.post('get-playlists', function (req, res) {
+  const authToken = req.body.authToken;
+
+  request.get({
+    url: 'https://api.spotify.com/v1/me/playlists',
+    headers: {
+      'Authorization': authToken
+    }
+  }, function (error, response, body) {
+    console.log('response from playlists:', response);
+
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(response))
   })
 })
 
